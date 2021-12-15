@@ -1,7 +1,5 @@
 ﻿namespace Microsoft.Teams.Apps.EmployeeTraining.Tests.TestData
-{   
-    extern alias BetaLib;
-
+{
     using Microsoft.AspNetCore.Http;
     using Microsoft.Bot.Schema.Teams;
     using Microsoft.Extensions.Options;

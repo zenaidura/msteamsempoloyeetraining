@@ -4,8 +4,6 @@
 
 namespace Microsoft.Teams.Apps.EmployeeTraining.Helpers
 {
-    extern alias BetaLib;
-
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -17,9 +15,6 @@ namespace Microsoft.Teams.Apps.EmployeeTraining.Helpers
     using Microsoft.Extensions.Localization;
     using Microsoft.Graph;
     using Microsoft.Teams.Apps.EmployeeTraining.Models;
-#pragma warning disable SA1135 // Referring BETA package of MS Graph SDK.
-    using Beta = BetaLib.Microsoft.Graph;
-#pragma warning restore SA1135 // Referring BETA package of MS Graph SDK.
     using EventType = Microsoft.Teams.Apps.EmployeeTraining.Models.EventType;
 
     /// <summary>
@@ -36,11 +31,6 @@ namespace Microsoft.Teams.Apps.EmployeeTraining.Helpers
         /// Instance of graph service client for application level requests.
         /// </summary>
         private readonly GraphServiceClient applicationGraphClient;
-
-        /// <summary>
-        /// Instance of BETA graph service client for application level requests.
-        /// </summary>
-        private readonly Beta.GraphServiceClient applicationBetaGraphClient;
 
         /// <summary>
         /// The current culture's string localizer
@@ -82,11 +72,6 @@ namespace Microsoft.Teams.Apps.EmployeeTraining.Helpers
                     return await tokenAcquisitionHelper.GetUserAccessTokenAsync(userObjectId, jwtToken);
                 });
 
-                this.applicationBetaGraphClient = GraphServiceClientFactory.GetAuthenticatedBetaGraphClient(async () =>
-                {
-                    return await tokenAcquisitionHelper.GetApplicationAccessTokenAsync();
-                });
-
                 this.applicationGraphClient = GraphServiceClientFactory.GetAuthenticatedGraphClient(async () =>
                 {
                     return await tokenAcquisitionHelper.GetApplicationAccessTokenAsync();
@@ -103,7 +88,7 @@ namespace Microsoft.Teams.Apps.EmployeeTraining.Helpers
         /// <returns>True if event cancellation is successful.</returns>
         public async Task<bool> CancelEventAsync(string eventGraphId, string createdByUserId, string comment)
         {
-            await this.applicationBetaGraphClient.Users[createdByUserId].Events[eventGraphId]
+            await this.applicationGraphClient.Users[createdByUserId].Events[eventGraphId]
                 .Cancel(comment).Request().PostAsync();
 
             return true;
